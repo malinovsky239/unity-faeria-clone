@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f0bf63e32b7473049b144a4df0706ce9
+timeCreated: 1503389322
+licenseType: Free
+MonoImporter:
+  serializedVersion: 2
+  defaultReferences:
+  - _endTurn_border: {fileID: 21300000, guid: f217ed20e43a9714f9861189204d49f6, type: 3}
+  - _endTurn_inactive: {fileID: 21300000, guid: 121e8601d35541540a62aa5d46ee79c7,
+      type: 3}
+  - _endTurn_active: {fileID: 21300000, guid: d715ec36fb83ffc45b7586514f062f6f, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
