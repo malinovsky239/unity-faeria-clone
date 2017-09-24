@@ -15,8 +15,8 @@ namespace Assets.Scripts
 
         private void Awake()
         {
-            _hero = GameObject.Find("Hero");
-            _life = GameObject.Find("Heart/Life").GetComponent<TextMesh>();
+            _hero = transform.Find("Hero").gameObject;
+            _life = transform.Find("Heart/Life").GetComponent<TextMesh>();
             _messageController = GameObject.Find(Constants.StringLiterals.MessageController).GetComponent<MessageController>();
             _spriteCollection = GameObject.Find(Constants.StringLiterals.GameController).GetComponent<SpriteCollection>();
         }
