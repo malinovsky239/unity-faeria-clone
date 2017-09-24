@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
@@ -35,10 +36,12 @@ namespace Assets.Scripts
         private GameObject _activeCard;
 
         private FieldHelper _fieldHelper;
+        private FieldInitializer _fieldInitializer;
 
         private void Awake()
         {
             _fieldHelper = GetComponent<FieldHelper>();
+            _fieldInitializer = GetComponent<FieldInitializer>();
             MagicSourceControllers = new MagicSourceController[Constants.MagicSourceControllersCount];
         }
 
@@ -287,6 +290,104 @@ namespace Assets.Scripts
             foreach (var controller in MagicSourceControllers)
             {
                 controller.Refill();
+            }
+        }
+
+        public GameController.Player[] GetMagicSourcesReachabilityInfo()
+        {
+            var reachingSide = new GameController.Player[Constants.MagicSourceControllersCount];
+            for (var i = 0; i < Constants.MagicSourceControllersCount; i++)
+            {
+                var magicSource = MagicSourceControllers[i];
+                var mask = 0;
+                if (HasAdjacentCellOfType(magicSource.Location, CellOwner.Player1))
+                {
+                    mask += 1;
+                }
+                if (HasAdjacentCellOfType(magicSource.Location, CellOwner.Player2))
+                {
+                    mask += 2;
+                }
+                reachingSide[i] = MaskToPlayer(mask);
+            }
+            return reachingSide;
+        }
+
+        public GameController.Player[] GetMagicSourcesControlInfo()
+        {
+            var controllingSide = new GameController.Player[Constants.MagicSourceControllersCount];
+            for (var i = 0; i < Constants.MagicSourceControllersCount; i++)
+            {
+                var magicSource = MagicSourceControllers[i];
+                var mask = 0;
+                if (HasAdjacentCellWithCard(magicSource.Location, GameController.Player.Player1))
+                {
+                    mask += 1;
+                }
+                if (HasAdjacentCellWithCard(magicSource.Location, GameController.Player.Player2))
+                {
+                    mask += 2;
+                }
+                controllingSide[i] = MaskToPlayer(mask);
+            }
+            return controllingSide;
+        }
+
+        private GameController.Player MaskToPlayer(int mask)
+        {
+            switch (mask)
+            {
+                case 0:
+                    return GameController.Player.None;
+                case 1:
+                    return GameController.Player.Player1;
+                case 2:
+                    return GameController.Player.Player2;
+                case 3:
+                    return GameController.Player.Both;
+                default:
+                    throw new Exception("Invalid mask");
+            }
+        }
+
+        public CardLibrary.Card GetCumulativePowerAroundCell(CellController center, int radius,
+            GameController.Player player)
+        {
+            var result = new CardLibrary.Card();
+            for (var i = 0; i < Field.Length; i++)
+            {
+                for (var j = 0; j < Field[i].Length; j++)
+                {
+                    if (Field[i][j] && FieldCellContent[i][j] == CellContent.Card)
+                    {
+                        var otherCell = Field[i][j].GetComponent<CellController>();
+                        if (Utils.Distance(center, otherCell) <= radius)
+                        {
+                            var card = FieldContent[i][j].GetComponent<CardController>();
+                            if (card.Owner == player)
+                            {
+                                result.Damage += card.GetDamage();
+                                result.Life += card.GetHealth();
+                            }
+                        }
+                    }
+                }
+            }
+            return result;
+        }
+
+        public CellController GetOrbPosition(GameController.Player player)
+        {
+            switch (player)
+            {
+                case GameController.Player.Player1:
+                    return Field[_fieldInitializer.CenterX + _fieldInitializer.Radius][_fieldInitializer.CenterY].GetComponent<CellController>();
+
+                case GameController.Player.Player2:
+                    return Field[_fieldInitializer.CenterX - _fieldInitializer.Radius][_fieldInitializer.CenterY].GetComponent<CellController>();
+
+                default:
+                    throw new Exception("Invalid player");
             }
         }
 

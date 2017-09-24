@@ -5,10 +5,9 @@ using UnityEngine;
 
 namespace Assets.Scripts
 {
-    // purely randomized behaviour for the time being
-    public class NPCBehaviour : MonoBehaviour
+    public class NpcBehaviour : MonoBehaviour
     {
-        public enum NPCTurnStage
+        public enum NpcTurnStage
         {
             TerrainExpansion,
             PlayCardsFromDeck,
@@ -16,13 +15,14 @@ namespace Assets.Scripts
             EndTurn
         }
 
-        public NPCTurnStage TurnStage { get; private set; }
+        public NpcTurnStage TurnStage { get; private set; }
         public int CurrentEnergy { get; set; }
 
         private GameController _gameController;
         private FieldController _fieldController;
         private List<CardController> _cardsInDeck;
         private List<CardController> _cardsOnField;
+        private INpcDecisionMaker _decisionMaker;
 
         private void Awake()
         {
@@ -32,20 +32,21 @@ namespace Assets.Scripts
             _cardsOnField = new List<CardController>();
         }
 
-        public void PutCardIntoDeck(CardController card)
+        private void Start()
         {
-            _cardsInDeck.Add(card);
+            _decisionMaker = new NpcDecisionMaker(_fieldController);
         }
 
         public IEnumerator MakeTurn()
         {
+            _decisionMaker.AdjustStrategyMode();
             yield return new WaitUntil(AllCardsInDeck);
             StartCoroutine(ExpandTerrain());
-            yield return new WaitUntil(() => TurnStage == NPCTurnStage.PlayCardsFromDeck);
+            yield return new WaitUntil(() => TurnStage == NpcTurnStage.PlayCardsFromDeck);
             StartCoroutine(PlayCardsFromDeck());
-            yield return new WaitUntil(() => TurnStage == NPCTurnStage.PlayCardsOnField);
+            yield return new WaitUntil(() => TurnStage == NpcTurnStage.PlayCardsOnField);
             StartCoroutine(PlayCardsOnField());
-            yield return new WaitUntil(() => TurnStage == NPCTurnStage.EndTurn);
+            yield return new WaitUntil(() => TurnStage == NpcTurnStage.EndTurn);
         }
 
         private IEnumerator ExpandTerrain()
@@ -57,40 +58,37 @@ namespace Assets.Scripts
                 {
                     break;
                 }
-                var index = Random.Range(0, expansionOptions.Count);
-                var cellToOccupy = expansionOptions[index];
-                expansionOptions.Remove(cellToOccupy);
+                CellController cellToOccupy = _decisionMaker.ChooseCellToOccupy(expansionOptions);
                 cellToOccupy.EnhanceTerrain(FieldController.CellOwner.Player2);
                 yield return new WaitForSeconds(Constants.Intervals.AfterTerrainExpansionByNPC);
             }
-            TurnStage = NPCTurnStage.PlayCardsFromDeck;
-        }
-
-        private bool AllCardsInDeck()
-        {
-            if (_cardsInDeck.Any(card => card.CurrentState != CardController.State.InDeck))
-            {
-                return false;
-            }
-            TurnStage = NPCTurnStage.TerrainExpansion;
-            return true;
+            TurnStage = NpcTurnStage.PlayCardsFromDeck;
         }
 
         private IEnumerator PlayCardsFromDeck()
         {
             var playableCards = _cardsInDeck.Where(card => card.IsPlayable()).ToList();
             var availableCells = _fieldController.GetCellsAvailableForCards(FieldController.CellOwner.Player2);
-            if (playableCards.Count > 0 && availableCells.Count > 0)
+            while (playableCards.Count > 0 && availableCells.Count > 0)
             {
-                var cardIndex = Random.Range(0, playableCards.Count);
-                var cellIndex = Random.Range(0, availableCells.Count);
-                var cardToPlay = playableCards[cardIndex];
-                availableCells[cellIndex].PlaceCard(cardToPlay);
-                _cardsInDeck.Remove(cardToPlay);
-                _cardsOnField.Add(cardToPlay);
+                CardController cardToPlay;
+                CellController cellToPlace;
+                _decisionMaker.PlayCardFromDeck(out cardToPlay, out cellToPlace, playableCards, availableCells);
+                if (cellToPlace)
+                {
+                    cellToPlace.PlaceCard(cardToPlay);
+                    availableCells.Remove(cellToPlace);
+                    _cardsInDeck.Remove(cardToPlay);
+                    _cardsOnField.Add(cardToPlay);
+                }
+                else
+                {
+                    break;
+                }
                 yield return new WaitUntil(() => cardToPlay.CurrentState == CardController.State.OnTheField);
+                playableCards = _cardsInDeck.Where(card => card.IsPlayable()).ToList();
             }
-            TurnStage = NPCTurnStage.PlayCardsOnField;
+            TurnStage = NpcTurnStage.PlayCardsOnField;
         }
 
         private IEnumerator PlayCardsOnField()
@@ -101,23 +99,38 @@ namespace Assets.Scripts
                 {
                     var destinationCells = _fieldController.GetPotentialDestinationCells(card.CellController, GameController.Player.Player2);
                     var cellsToAttack = destinationCells.FindAll(cell => _fieldController.FieldCellContent[cell.HexX][cell.HexY] != FieldController.CellContent.Empty);
-                    if (cellsToAttack.Count > 0)
+                    CellController cellToMove = null;
+                    CellController cellToAttack = null;
+                    _decisionMaker.PlayCardOnField(ref cellToMove, ref cellToAttack, card, destinationCells, cellsToAttack);
+                    if (cellToMove)
                     {
-                        var cellToAttack = cellsToAttack[Random.Range(0, cellsToAttack.Count)];
-                        StartCoroutine(card.MoveTo(cellToAttack.DefaultAttackFrom));
+                        StartCoroutine(card.MoveTo(cellToMove));
                         yield return new WaitWhile(() => card.CurrentState == CardController.State.MovingOnTheField);
-                        StartCoroutine(card.Attack(_fieldController.FieldContent[cellToAttack.HexX][cellToAttack.HexY]));
-                        yield return new WaitUntil(() => _gameController.OngoingAnimationsCount == 0);
-                    }
-                    else
-                    {
-                        var selectedCell = destinationCells[Random.Range(0, destinationCells.Count)];
-                        StartCoroutine(card.MoveTo(selectedCell));
-                        yield return new WaitWhile(() => card.CurrentState == CardController.State.MovingOnTheField);
+                        if (cellToAttack)
+                        {
+                            StartCoroutine(
+                                card.Attack(_fieldController.FieldContent[cellToAttack.HexX][cellToAttack.HexY]));
+                            yield return new WaitUntil(() => _gameController.OngoingAnimationsCount == 0);
+                        }
                     }
                 }
             }
-            TurnStage = NPCTurnStage.EndTurn;
+            TurnStage = NpcTurnStage.EndTurn;
+        }
+
+        private bool AllCardsInDeck()
+        {
+            if (_cardsInDeck.Any(card => card.CurrentState != CardController.State.InDeck))
+            {
+                return false;
+            }
+            TurnStage = NpcTurnStage.TerrainExpansion;
+            return true;
+        }
+
+        public void PutCardIntoDeck(CardController card)
+        {
+            _cardsInDeck.Add(card);
         }
     }
 }

@@ -32,5 +32,16 @@ namespace Assets.Scripts
                     return GameController.Player.None;
             }
         }
+
+        public static int Distance(CellController cellA, CellController cellB)
+        {
+            var dx = cellA.HexX - cellB.HexX;
+            var dy = cellA.HexY - cellB.HexY;
+            if (dx * dy <= 0)
+            {
+                return Mathf.Max(Mathf.Abs(dx), Mathf.Abs(dy));
+            }
+            return Mathf.Abs(dx) + Mathf.Abs(dy);
+        }
     }
 }

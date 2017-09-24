@@ -24,6 +24,7 @@ namespace Assets.Scripts
         public int HexX { get; private set; }
         public int HexY { get; private set; }
         public CellController DefaultAttackFrom { get; private set; }
+        public bool HasNeighboringMagicSource { get; private set; }
         private MagicSourceController _neighboringMagicSource;
         private bool _actionReady;
 
@@ -145,6 +146,7 @@ namespace Assets.Scripts
         public void SetNeighboringMagicSource(MagicSourceController magicSource)
         {
             _neighboringMagicSource = magicSource;
+            HasNeighboringMagicSource = true;
         }
 
         public void SetCoordinates(int x, int y)

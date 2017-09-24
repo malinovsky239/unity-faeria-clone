@@ -18,7 +18,8 @@ namespace Assets.Scripts
         {
             Player1,
             Player2,
-            None
+            None,
+            Both
         }
 
         public Mode CurrentMode { get; set; }
@@ -41,7 +42,7 @@ namespace Assets.Scripts
         private int _playerEnergy;
         public bool IsPlayerMove { get; private set; }
 
-        private NPCBehaviour _npc;
+        private NpcBehaviour _npc;
 
         private void Awake()
         {
@@ -53,7 +54,7 @@ namespace Assets.Scripts
         private void Start()
         {
             _fieldInitializer.Initialize();
-            _npc = GetComponent<NPCBehaviour>();
+            _npc = GetComponent<NpcBehaviour>();
 
             _playerEnergy = Constants.StartMoveEnergyBonus;
             _currentMoveTerrainCellsCount = Constants.StartMoveTerrainCellsCount;
@@ -89,7 +90,7 @@ namespace Assets.Scripts
             yield return new WaitForSeconds(Constants.Intervals.BeforeNPCTurn);
             NewTurnPreparationsStage2(Player.Player2);
             StartCoroutine(_npc.MakeTurn());
-            yield return new WaitUntil(() => _npc.TurnStage == NPCBehaviour.NPCTurnStage.EndTurn && OngoingAnimationsCount == 0);
+            yield return new WaitUntil(() => _npc.TurnStage == NpcBehaviour.NpcTurnStage.EndTurn && OngoingAnimationsCount == 0);
 
             _currentMoveTerrainCellsCount = Constants.StartMoveTerrainCellsCount;
             if (_fieldController.GetPotentialTerrainExpansion(FieldController.CellOwner.Player1).Count == 0)

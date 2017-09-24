@@ -198,6 +198,11 @@ namespace Assets.Scripts
             return _info.Damage;
         }
 
+        public int GetHealth()
+        {
+            return _info.Life;
+        }
+
         public bool IsSelectable()
         {
             return Owner == GameController.Player.Player1 &&
@@ -207,7 +212,7 @@ namespace Assets.Scripts
         }
 
         public bool IsPlayable()
-        {            
+        {
             return _info.Energy <= _gameController.GetPlayerEnergy(Owner);
         }
 

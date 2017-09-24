@@ -36,6 +36,7 @@ namespace Assets.Scripts
         public void TakeEnergy(GameController.Player player)
         {
             _spriteRenderer.sprite = _spriteCollection.EmptyMagicSource;
+            RemoveDeadBubbles();
             foreach (var bubble in _bubbles)
             {
                 bubble.GetComponent<BubbleController>().GoToOrb(_gameController.GetOrbPositionByOwner(player));
@@ -54,13 +55,18 @@ namespace Assets.Scripts
 
         private void Update()
         {
-            _bubbles = _bubbles.Where(elem => elem != null).ToList();
+            RemoveDeadBubbles();
             if (HasEnergy() && _bubbles.Count < Constants.Bubble.MaxNumberPerMagicSource)
             {
                 var newBubble = Instantiate(_bubblePrefab);
                 newBubble.transform.SetParent(transform, false);
                 _bubbles.Add(newBubble);
             }
+        }
+
+        private void RemoveDeadBubbles()
+        {
+            _bubbles = _bubbles.Where(elem => elem != null).ToList();
         }
 
         private bool HasEnergy()

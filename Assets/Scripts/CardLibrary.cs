@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts
 {
@@ -19,6 +20,15 @@ namespace Assets.Scripts
                 Life = life;
                 Energy = energy;
                 Index = -1;
+            }
+
+            public int TurnsToDefeat(Card other)
+            {
+                if (Damage == 0)
+                {
+                    return Int32.MaxValue;
+                }
+                return (other.Life + Damage - 1) / Damage;
             }
         }
 
