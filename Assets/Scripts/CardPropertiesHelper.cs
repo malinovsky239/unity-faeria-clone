@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -39,9 +40,9 @@ namespace Assets.Scripts
             }
         }
 
-        public void SetHealth(int health = -1)
+        public void SetHealth(int health = -Int32.MaxValue)
         {
-            transform.Find("Heart/Life").GetComponent<TextMesh>().text = health == -1 ? "?" : health.ToString();
+            transform.Find("Heart/Life").GetComponent<TextMesh>().text = health == -Int32.MaxValue ? "?" : health.ToString();
         }
 
         private void SetCreature(Sprite creature = null)
