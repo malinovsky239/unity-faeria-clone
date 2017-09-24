@@ -43,7 +43,10 @@ namespace Assets.Scripts
             _spriteRenderer.sprite = _endTurn_border;
             yield return new WaitUntil(() => _gameController.IsPlayerMove);
             _hourglass.SetActive(false);
-            _terrainButton.SetActive(true);
+            if (!_on)
+            {
+                _terrainButton.SetActive(true);
+            }
         }
 
         private void OnMouseEnter()
