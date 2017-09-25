@@ -67,23 +67,16 @@ namespace Assets.Scripts
 
         private void CreateField()
         {
-            _fieldController.Field = new CellController[FieldMaxVertDiameter][];
-            _fieldController.FieldContent = new GameObject[FieldMaxVertDiameter][];
-            _fieldController.FieldCellOwner = new FieldController.CellOwner[FieldMaxVertDiameter][];
-            _fieldController.FieldCellContent = new FieldController.CellContent[FieldMaxVertDiameter][];
             var horizontalSize = (FieldMaxVertDiameter - FieldMinVertDiameter) * 2 + 1;
-            for (var i = 0; i < FieldMaxVertDiameter; i++)
-            {
-                _fieldController.Field[i] = new CellController[horizontalSize];
-                _fieldController.FieldCellOwner[i] = new FieldController.CellOwner[horizontalSize];
-                _fieldController.FieldCellContent[i] = new FieldController.CellContent[horizontalSize];
-                _fieldController.FieldContent[i] = new GameObject[horizontalSize];
-            }
+            _fieldController.Field = new HexField<CellController>(FieldMaxVertDiameter, horizontalSize);
+            _fieldController.FieldContent = new HexField<GameObject>(FieldMaxVertDiameter, horizontalSize);
+            _fieldController.FieldCellOwner = new HexField<FieldController.CellOwner>(FieldMaxVertDiameter, horizontalSize);
+            _fieldController.FieldCellContent = new HexField<FieldController.CellContent>(FieldMaxVertDiameter, horizontalSize);
         }
 
         private void InitField()
         {
-            _fieldController.Field[CenterX][CenterY] = CreateCell(new Vector2(0, 0), CenterX, CenterY);
+            _fieldController.Field[CenterX, CenterY] = CreateCell(new Vector2(0, 0), CenterX, CenterY);
             for (var i = 0; i < FieldMaxVertDiameter / 2; i++)
             {
                 AddNeighbour(CenterX - i, CenterY, Constants.Neighbours.Up);
@@ -114,16 +107,16 @@ namespace Assets.Scripts
             for (var i = 0; i < Constants.MagicSourceControllersCount; i++)
             {
                 _fieldHelper.SetCellContent(_cornersX[i], _cornersY[i], _magicSourcePrefab, Constants.MagicSourceScaleCoeff);
-                var magicSource = _fieldController.FieldContent[_cornersX[i]][_cornersY[i]].GetComponent<MagicSourceController>();
-                magicSource.SetLocation(_fieldController.Field[_cornersX[i]][_cornersY[i]]);
+                var magicSource = _fieldController.FieldContent[_cornersX[i], _cornersY[i]].GetComponent<MagicSourceController>();
+                magicSource.SetLocation(_fieldController.Field[_cornersX[i], _cornersY[i]]);
                 _fieldController.MagicSourceControllers[i] = magicSource;
                 for (var j = 0; j < Constants.HexCoordShiftsX.Length; j++)
                 {
                     var newX = _cornersX[i] + Constants.HexCoordShiftsX[j];
                     var newY = _cornersY[i] + Constants.HexCoordShiftsY[j];
-                    if (_fieldHelper.ValidCellCoordinate(newX, newY) && _fieldController.Field[newX][newY])
+                    if (_fieldHelper.ValidCellCoordinate(newX, newY) && _fieldController.Field[newX, newY])
                     {
-                        _fieldController.Field[newX][newY].SetNeighboringMagicSource(magicSource);
+                        _fieldController.Field[newX, newY].SetNeighboringMagicSource(magicSource);
                     }
                 }
             }
@@ -136,14 +129,14 @@ namespace Assets.Scripts
             {
                 var coordX = CenterX + Constants.HexCoordShiftsX[(i + 1) / 2] * Radius;
                 var coordY = CenterY + Constants.HexCoordShiftsY[(i + 1) / 2] * Radius;
-                _fieldController.Field[coordX][coordY].GetComponent<SpriteRenderer>().sprite = _emptyCell;
-                _fieldController.FieldCellContent[coordX][coordY] = FieldController.CellContent.Orb;
+                _fieldController.Field[coordX, coordY].GetComponent<SpriteRenderer>().sprite = _emptyCell;
+                _fieldController.FieldCellContent[coordX, coordY] = FieldController.CellContent.Orb;
                 _fieldHelper.SetCellContent(coordX, coordY, _orbPrefab);
             }
-            _fieldController.FieldCellOwner[CenterX + Radius][CenterY] = FieldController.CellOwner.Player1;
-            _fieldController.FieldCellOwner[CenterX - Radius][CenterY] = FieldController.CellOwner.Player2;
+            _fieldController.FieldCellOwner[CenterX + Radius, CenterY] = FieldController.CellOwner.Player1;
+            _fieldController.FieldCellOwner[CenterX - Radius, CenterY] = FieldController.CellOwner.Player2;
 
-            var enemy = _fieldController.FieldContent[CenterX - Radius][CenterY].GetComponent<OrbController>();
+            var enemy = _fieldController.FieldContent[CenterX - Radius, CenterY].GetComponent<OrbController>();
             enemy.SetOwner(GameController.Player.Player2);
             enemy.SetHero(_smileyDevil, Constants.SmileyDevilScaleCoeff);
         }
@@ -178,8 +171,8 @@ namespace Assets.Scripts
             }
             var shiftHexX = Constants.HexCoordShiftsX[(int)type];
             var shiftHexY = Constants.HexCoordShiftsY[(int)type];
-            var cell = _fieldController.Field[hexX][hexY];
-            _fieldController.Field[hexX + shiftHexX][hexY + shiftHexY] =
+            var cell = _fieldController.Field[hexX, hexY];
+            _fieldController.Field[hexX + shiftHexX, hexY + shiftHexY] =
                 CreateCell(cell.transform.position + new Vector3(shiftX, shiftY),
                            hexX + shiftHexX, hexY + shiftHexY);
         }
@@ -198,8 +191,8 @@ namespace Assets.Scripts
             cell.transform.position = new Vector3(shift.x, shift.y);
             cell.transform.parent = _board.transform;
 
-            _fieldController.FieldCellOwner[hexX][hexY] = FieldController.CellOwner.Empty;
-            _fieldController.FieldCellContent[hexX][hexY] = FieldController.CellContent.Empty;
+            _fieldController.FieldCellOwner[hexX, hexY] = FieldController.CellOwner.Empty;
+            _fieldController.FieldCellContent[hexX, hexY] = FieldController.CellContent.Empty;
 
             return cell.GetComponent<CellController>();
         }

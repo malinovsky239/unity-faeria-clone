@@ -201,7 +201,7 @@ namespace Assets.Scripts
                 default:
                     throw new Exception("Wrong player");
             }
-            var orb = _fieldController.FieldContent[_fieldInitializer.CenterX + xShift][_fieldInitializer.CenterY];
+            var orb = _fieldController.FieldContent[_fieldInitializer.CenterX + xShift, _fieldInitializer.CenterY];
             return orb.transform.position;
         }
 

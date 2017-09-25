@@ -99,7 +99,7 @@ namespace Assets.Scripts
                 if (card.CanMoveThisTurn)
                 {
                     var destinationCells = _fieldController.GetPotentialDestinationCells(card.CellController, GameController.Player.Player2);
-                    var cellsToAttack = destinationCells.FindAll(cell => _fieldController.FieldCellContent[cell.HexX][cell.HexY] != FieldController.CellContent.Empty);
+                    var cellsToAttack = destinationCells.FindAll(cell => _fieldController.FieldCellContent[cell] != FieldController.CellContent.Empty);
                     CellController cellToMove = null;
                     CellController cellToAttack = null;
                     _decisionMaker.PlayCardOnField(ref cellToMove, ref cellToAttack, card, destinationCells, cellsToAttack);
@@ -110,7 +110,7 @@ namespace Assets.Scripts
                         if (cellToAttack)
                         {
                             StartCoroutine(
-                                card.Attack(_fieldController.FieldContent[cellToAttack.HexX][cellToAttack.HexY]));
+                                card.Attack(_fieldController.FieldContent[cellToAttack]));
                             yield return new WaitUntil(() => _gameController.OngoingAnimationsCount == 0);
                             if (_gameController.CurrentMode == GameController.Mode.GameOver)
                             {

@@ -18,19 +18,19 @@ namespace Assets.Scripts
         {
             var gameObj = Instantiate(prefab);
             var rendererSize = prefab.GetComponent<SpriteRenderer>().size;
-            gameObj.transform.position = _fieldController.Field[x][y].transform.position;
+            gameObj.transform.position = _fieldController.Field[x, y].transform.position;
             gameObj.transform.localScale = new Vector3(
                 _fieldInitializer.CellOuterRadius * 2 / rendererSize.x * scaleCoeff,
                 _fieldInitializer.CellInnerRadius * 2 / rendererSize.y * scaleCoeff);
 
-            _fieldController.FieldContent[x][y] = gameObj;
-            _fieldController.FieldCellOwner[x][y] = cellOwner;
+            _fieldController.FieldContent[x, y] = gameObj;
+            _fieldController.FieldCellOwner[x, y] = cellOwner;
         }
 
         public bool ValidCellCoordinate(int hexX, int hexY)
         {
-            return hexX >= 0 && hexX < _fieldController.Field.Length &&
-                   hexY >= 0 && hexY < _fieldController.Field[hexX].Length;
+            return hexX >= 0 && hexX < _fieldController.Field.VerticalSize &&
+                   hexY >= 0 && hexY < _fieldController.Field.HorizontalSize;
         }
 
         public bool AreNeighbours(CellController cellA, CellController cellB)

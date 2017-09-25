@@ -44,13 +44,13 @@ namespace Assets.Scripts
             if (player == FieldController.CellOwner.Player1)
             {
                 _spriteRenderer.sprite = _terrain1;
-                _fieldController.FieldCellOwner[HexX][HexY] = FieldController.CellOwner.Player1;
+                _fieldController.FieldCellOwner[this] = FieldController.CellOwner.Player1;
                 _gameController.DecrementTerrainCellsCount();
             }
             else
             {
                 _spriteRenderer.sprite = _terrain2;
-                _fieldController.FieldCellOwner[HexX][HexY] = FieldController.CellOwner.Player2;
+                _fieldController.FieldCellOwner[this] = FieldController.CellOwner.Player2;
             }
         }
 
@@ -107,12 +107,12 @@ namespace Assets.Scripts
             }
             if (_spriteRenderer.sprite == _terrain1)
             {
-                _spriteRenderer.sprite = _fieldController.FieldCellContent[HexX][HexY] == FieldController.CellContent.Empty
+                _spriteRenderer.sprite = _fieldController.FieldCellContent[this] == FieldController.CellContent.Empty
                                          ? _terrain1_selected : _terrain1_attacked;
             }
             if (_spriteRenderer.sprite == _terrain2)
             {
-                _spriteRenderer.sprite = _fieldController.FieldCellContent[HexX][HexY] == FieldController.CellContent.Empty
+                _spriteRenderer.sprite = _fieldController.FieldCellContent[this] == FieldController.CellContent.Empty
                                          ? _terrain2_selected : _terrain2_attacked;
             }
             if (_spriteRenderer.sprite == _orbLocation)
