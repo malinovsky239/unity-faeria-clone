@@ -68,7 +68,7 @@ namespace Assets.Scripts
             }
         }
 
-        private void OnMouseOver()
+        public void OnMouseEnter()
         {
             if (_gameController.CurrentMode == GameController.Mode.MovingCard && _actionReady)
             {
@@ -158,6 +158,11 @@ namespace Assets.Scripts
         public void SetDefaultAttackSource(CellController controller)
         {
             DefaultAttackFrom = controller;
+        }
+
+        public void MakeActionReady()
+        {
+            _actionReady = true;
         }
     }
 }

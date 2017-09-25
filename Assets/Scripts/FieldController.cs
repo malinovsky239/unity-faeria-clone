@@ -47,7 +47,9 @@ namespace Assets.Scripts
 
         public void TrySetAsCellToAttackFrom(CellController cell)
         {
-            if (CellsToAttackInOneMoveExist && FieldCellContent[cell.HexX][cell.HexY] == CellContent.Empty)
+            if ((FieldCellContent[cell.HexX][cell.HexY] == CellContent.Empty ||
+                 FieldCellContent[cell.HexX][cell.HexY] == CellContent.Card && FieldContent[cell.HexX][cell.HexY].GetComponent<CardController>().Owner == GameController.Player.Player1)
+                && CellsToAttackInOneMoveExist)
             {
                 CellToAttackFrom = cell;
             }
@@ -84,6 +86,8 @@ namespace Assets.Scripts
         public void ShowPotentialDestinationCells(CellController sourceCell, GameController.Player player)
         {
             Highlight(GetPotentialDestinationCells(sourceCell, player));
+            sourceCell.MakeActionReady();
+            _highlightedCellControllers.Add(sourceCell);
         }
 
         public List<CellController> GetPotentialTerrainExpansion(CellOwner player)

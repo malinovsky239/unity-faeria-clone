@@ -46,6 +46,11 @@ namespace Assets.Scripts
             {
                 State = MouseInteractionState.MouseOver;
             }
+            else if (_gameController.CurrentMode == GameController.Mode.MovingCard
+                     && _cardController.CurrentState == CardController.State.OnTheField)
+            {
+                _cardController.CellController.OnMouseEnter(); // pass MouseOver "through" card's collider
+            }
         }
 
         private void OnMouseExit()
