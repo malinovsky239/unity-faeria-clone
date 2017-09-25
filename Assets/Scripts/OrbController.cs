@@ -38,7 +38,7 @@ namespace Assets.Scripts
         {
             var newHealth = GetHealth() - value;
             SetHealth(newHealth);
-            if (newHealth < 0)
+            if (newHealth <= 0)
             {
                 StartCoroutine(Die());
             }
