@@ -160,7 +160,7 @@ namespace Assets.Scripts
         public CardController GenerateRandomCard(DeckController deck, Player player)
         {
             GameObject card = Instantiate(_cardPrefab);
-            CardLibrary.Card cardProperties = CardLibrary.GetRandomCard();
+            CardLibrary.Card cardProperties = CardLibrary.GetRandomCard(player);
             CardController controller = card.GetComponent<CardController>();
             controller.Initialize(deck.NewCardPosition(controller),
                 cardProperties, _cardCreatures[cardProperties.Index], player);
