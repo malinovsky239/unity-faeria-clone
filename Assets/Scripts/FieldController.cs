@@ -68,6 +68,7 @@ namespace Assets.Scripts
             {
                 StartCoroutine(cardController.MoveTo(destinationCell));
             }
+            CellToAttackFrom = null;
         }
 
         public void ShowPotentialTerrainExpansion(CellOwner player)
