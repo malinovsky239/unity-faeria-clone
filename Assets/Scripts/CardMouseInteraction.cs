@@ -62,17 +62,16 @@ namespace Assets.Scripts
                 && _cardController.IsSelectable())
             {
                 _pointer.transform.position = transform.position;
+                State = MouseInteractionState.Selected;
                 switch (_cardController.CurrentState)
                 {
                     case CardController.State.InDeck:
-                        State = MouseInteractionState.Selected;
                         _gameController.CurrentMode = GameController.Mode.PlacingCard;
                         _fieldController.ShowCellsAvailableForCards(FieldController.CellOwner.Player1);
                         _deckController.SelectCard(gameObject);
                         break;
 
                     case CardController.State.OnTheField:
-                        State = MouseInteractionState.Selected;
                         _gameController.CurrentMode = GameController.Mode.MovingCard;
                         _fieldController.ShowPotentialDestinationCells(_cardController.CellController, GameController.Player.Player1);
                         _fieldController.SelectCard(gameObject);
