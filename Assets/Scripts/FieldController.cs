@@ -23,7 +23,7 @@ namespace Assets.Scripts
             Orb
         }
 
-        public GameObject[][] Field;
+        public CellController[][] Field;
         public GameObject[][] FieldContent;
         public CellOwner[][] FieldCellOwner;
         public CellContent[][] FieldCellContent;
@@ -99,7 +99,7 @@ namespace Assets.Scripts
                 {
                     if (_fieldHelper.ValidCellCoordinate(i, j) && Field[i][j])
                     {
-                        var cell = Field[i][j].GetComponent<CellController>();
+                        var cell = Field[i][j];
                         if ((HasAdjacentCellOfType(cell, player) ||
                              HasAdjacentCellWithCard(cell, Utils.CellOwnerToPlayer(player))) &&
                             FieldCellOwner[i][j] == CellOwner.Empty)
@@ -121,8 +121,8 @@ namespace Assets.Scripts
                 {
                     if (FieldCellOwner[i][j] == player && FieldCellContent[i][j] == CellContent.Empty)
                     {
-                        var controller = Field[i][j].GetComponent<CellController>();
-                        availableCells.Add(controller);
+                        var cell = Field[i][j];
+                        availableCells.Add(cell);
                     }
                 }
             }
@@ -153,8 +153,8 @@ namespace Assets.Scripts
                          FieldCellOwner[adjX][adjY] == CellOwner.Player2) &&
                         FieldCellContent[adjX][adjY] == CellContent.Empty)
                     {
-                        var controller = Field[adjX][adjY].GetComponent<CellController>();
-                        adjacentPassableCells.Add(controller);
+                        var adjCell = Field[adjX][adjY];
+                        adjacentPassableCells.Add(adjCell);
                     }
                 }
             }
@@ -180,7 +180,7 @@ namespace Assets.Scripts
                             FieldCellContent[neighbourCoordX][neighbourCoordY] == CellContent.Orb &&
                             Utils.CellOwnerToPlayer(FieldCellOwner[neighbourCoordX][neighbourCoordY]) != player)
                         {
-                            var cellToAttack = Field[neighbourCoordX][neighbourCoordY].GetComponent<CellController>();
+                            var cellToAttack = Field[neighbourCoordX][neighbourCoordY];
                             cellToAttack.SetDefaultAttackSource(controller);
                             cellsWithOpponentCards.Add(cellToAttack);
                         }
@@ -369,7 +369,7 @@ namespace Assets.Scripts
                 {
                     if (Field[i][j] && FieldCellContent[i][j] == CellContent.Card)
                     {
-                        var otherCell = Field[i][j].GetComponent<CellController>();
+                        var otherCell = Field[i][j];
                         if (Utils.Distance(center, otherCell) <= radius)
                         {
                             var card = FieldContent[i][j].GetComponent<CardController>();
@@ -390,10 +390,10 @@ namespace Assets.Scripts
             switch (player)
             {
                 case GameController.Player.Player1:
-                    return Field[_fieldInitializer.CenterX + _fieldInitializer.Radius][_fieldInitializer.CenterY].GetComponent<CellController>();
+                    return Field[_fieldInitializer.CenterX + _fieldInitializer.Radius][_fieldInitializer.CenterY];
 
                 case GameController.Player.Player2:
-                    return Field[_fieldInitializer.CenterX - _fieldInitializer.Radius][_fieldInitializer.CenterY].GetComponent<CellController>();
+                    return Field[_fieldInitializer.CenterX - _fieldInitializer.Radius][_fieldInitializer.CenterY];
 
                 default:
                     throw new Exception("Invalid player");

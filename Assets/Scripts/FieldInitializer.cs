@@ -67,14 +67,14 @@ namespace Assets.Scripts
 
         private void CreateField()
         {
-            _fieldController.Field = new GameObject[FieldMaxVertDiameter][];
+            _fieldController.Field = new CellController[FieldMaxVertDiameter][];
             _fieldController.FieldContent = new GameObject[FieldMaxVertDiameter][];
             _fieldController.FieldCellOwner = new FieldController.CellOwner[FieldMaxVertDiameter][];
             _fieldController.FieldCellContent = new FieldController.CellContent[FieldMaxVertDiameter][];
             var horizontalSize = (FieldMaxVertDiameter - FieldMinVertDiameter) * 2 + 1;
             for (var i = 0; i < FieldMaxVertDiameter; i++)
             {
-                _fieldController.Field[i] = new GameObject[horizontalSize];
+                _fieldController.Field[i] = new CellController[horizontalSize];
                 _fieldController.FieldCellOwner[i] = new FieldController.CellOwner[horizontalSize];
                 _fieldController.FieldCellContent[i] = new FieldController.CellContent[horizontalSize];
                 _fieldController.FieldContent[i] = new GameObject[horizontalSize];
@@ -115,7 +115,7 @@ namespace Assets.Scripts
             {
                 _fieldHelper.SetCellContent(_cornersX[i], _cornersY[i], _magicSourcePrefab, Constants.MagicSourceScaleCoeff);
                 var magicSource = _fieldController.FieldContent[_cornersX[i]][_cornersY[i]].GetComponent<MagicSourceController>();
-                magicSource.SetLocation(_fieldController.Field[_cornersX[i]][_cornersY[i]].GetComponent<CellController>());
+                magicSource.SetLocation(_fieldController.Field[_cornersX[i]][_cornersY[i]]);
                 _fieldController.MagicSourceControllers[i] = magicSource;
                 for (var j = 0; j < Constants.HexCoordShiftsX.Length; j++)
                 {
@@ -123,7 +123,7 @@ namespace Assets.Scripts
                     var newY = _cornersY[i] + Constants.HexCoordShiftsY[j];
                     if (_fieldHelper.ValidCellCoordinate(newX, newY) && _fieldController.Field[newX][newY])
                     {
-                        _fieldController.Field[newX][newY].GetComponent<CellController>().SetNeighboringMagicSource(magicSource);
+                        _fieldController.Field[newX][newY].SetNeighboringMagicSource(magicSource);
                     }
                 }
             }
@@ -184,7 +184,7 @@ namespace Assets.Scripts
                            hexX + shiftHexX, hexY + shiftHexY);
         }
 
-        private GameObject CreateCell(Vector2 shift, int hexX, int hexY)
+        private CellController CreateCell(Vector2 shift, int hexX, int hexY)
         {
             var cell = Instantiate(_cellPrefab);
 
@@ -201,7 +201,7 @@ namespace Assets.Scripts
             _fieldController.FieldCellOwner[hexX][hexY] = FieldController.CellOwner.Empty;
             _fieldController.FieldCellContent[hexX][hexY] = FieldController.CellContent.Empty;
 
-            return cell;
+            return cell.GetComponent<CellController>();
         }
     }
 }
