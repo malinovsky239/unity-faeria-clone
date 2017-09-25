@@ -11,7 +11,8 @@ namespace Assets.Scripts
             WaitingForAction,
             EnhancingTerrain1,
             PlacingCard,
-            MovingCard
+            MovingCard,
+            GameOver
         }
 
         public enum Player
@@ -202,7 +203,7 @@ namespace Assets.Scripts
 
         public bool IsUIBlocked()
         {
-            return OngoingAnimationsCount > 0 || !IsPlayerMove;
+            return CurrentMode == Mode.GameOver || OngoingAnimationsCount > 0 || !IsPlayerMove;
         }
 
         public void SwitchToWaitingMode()
@@ -222,6 +223,12 @@ namespace Assets.Scripts
                 default:
                     throw new Exception("Wrong player");
             }
+        }
+
+        public void GameOver()
+        {
+            CurrentMode = Mode.GameOver;
+            _endTurn.GameOver();
         }
     }
 }

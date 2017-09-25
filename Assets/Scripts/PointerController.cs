@@ -37,7 +37,7 @@ namespace Assets.Scripts
 
         private void Update()
         {
-            if (_gameController.CurrentMode != GameController.Mode.WaitingForAction)
+            if (_gameController.CurrentMode != GameController.Mode.WaitingForAction && _gameController.CurrentMode != GameController.Mode.GameOver)
             {
                 var source = transform.position;
                 var target = _camera.ScreenToWorldPoint(Input.mousePosition);

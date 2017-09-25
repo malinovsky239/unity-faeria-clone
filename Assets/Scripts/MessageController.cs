@@ -35,10 +35,16 @@ namespace Assets.Scripts
             {
                 if (transform.localScale.magnitude > _targetScale.magnitude)
                 {
-                    Hide();
-                    _gameController.CurrentMode = GameController.Mode.WaitingForAction;
+                    if (_gameController.CurrentMode != GameController.Mode.GameOver)
+                    {
+                        Hide();
+                        _gameController.CurrentMode = GameController.Mode.WaitingForAction;
+                    }
                 }
-                transform.localScale *= Constants.MessageScaleMultiplier;
+                else
+                {
+                    transform.localScale *= Constants.MessageScaleMultiplier;
+                }
             }
         }
     }

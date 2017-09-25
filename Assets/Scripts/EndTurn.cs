@@ -49,6 +49,14 @@ namespace Assets.Scripts
             }
         }
 
+        public void GameOver()
+        {
+            _on = false;
+            _hourglass.SetActive(false);
+            _terrainButton.SetActive(false);
+            _spriteRenderer.sprite = _endTurn_border;
+        }
+
         private void OnMouseEnter()
         {
             if (_on && !_gameController.IsUIBlocked())

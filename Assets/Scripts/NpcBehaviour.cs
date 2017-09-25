@@ -112,6 +112,10 @@ namespace Assets.Scripts
                             StartCoroutine(
                                 card.Attack(_fieldController.FieldContent[cellToAttack.HexX][cellToAttack.HexY]));
                             yield return new WaitUntil(() => _gameController.OngoingAnimationsCount == 0);
+                            if (_gameController.CurrentMode == GameController.Mode.GameOver)
+                            {
+                                break;
+                            }
                         }
                     }
                 }

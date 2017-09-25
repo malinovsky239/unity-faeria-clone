@@ -10,6 +10,7 @@ namespace Assets.Scripts
         private TextMesh _life;
 
         private GameController.Player _owner = GameController.Player.Player1;
+        private GameController _gameController;
         private MessageController _messageController;
         private SpriteCollection _spriteCollection;
 
@@ -18,7 +19,9 @@ namespace Assets.Scripts
             _hero = transform.Find("Hero").gameObject;
             _life = transform.Find("Heart/Life").GetComponent<TextMesh>();
             _messageController = GameObject.Find(Constants.StringLiterals.MessageController).GetComponent<MessageController>();
-            _spriteCollection = GameObject.Find(Constants.StringLiterals.GameController).GetComponent<SpriteCollection>();
+            var gameControllerObject = GameObject.Find(Constants.StringLiterals.GameController);
+            _gameController = gameControllerObject.GetComponent<GameController>();
+            _spriteCollection = gameControllerObject.GetComponent<SpriteCollection>();
         }
 
         public void SetOwner(GameController.Player player)
@@ -46,6 +49,7 @@ namespace Assets.Scripts
 
         private IEnumerator Die()
         {
+            _gameController.GameOver();
             GetComponent<SpriteRenderer>().sprite = _spriteCollection.BrokenOrb;
             yield return new WaitForSeconds(Constants.Intervals.BeforeOrbDeath);
             _messageController.Show(_owner == GameController.Player.Player1
