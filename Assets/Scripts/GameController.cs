@@ -92,6 +92,10 @@ namespace Assets.Scripts
             NewTurnPreparationsStage2(Player.Player2);
             StartCoroutine(_npc.MakeTurn());
             yield return new WaitUntil(() => _npc.TurnStage == NpcBehaviour.NpcTurnStage.EndTurn && OngoingAnimationsCount == 0);
+            if (CurrentMode == Mode.GameOver)
+            {
+                yield break;
+            }
 
             _currentMoveTerrainCellsCount = Constants.StartMoveTerrainCellsCount;
             if (_fieldController.GetPotentialTerrainExpansion(FieldController.CellOwner.Player1).Count == 0)
