@@ -39,6 +39,7 @@ namespace Assets.Scripts
 
         public IEnumerator MakeTurn()
         {
+            RemoveKilledCards();
             _decisionMaker.AdjustStrategyMode();
             yield return new WaitUntil(AllCardsInDeck);
             StartCoroutine(ExpandTerrain());
@@ -126,6 +127,11 @@ namespace Assets.Scripts
             }
             TurnStage = NpcTurnStage.TerrainExpansion;
             return true;
+        }
+
+        private void RemoveKilledCards()
+        {
+            _cardsOnField = _cardsOnField.Where(card => card != null).ToList();
         }
 
         public void PutCardIntoDeck(CardController card)

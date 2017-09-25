@@ -183,9 +183,9 @@ namespace Assets.Scripts
 
         private IEnumerator Die()
         {
+            _fieldController.ClearCell(CellController);
             yield return new WaitForSeconds(Constants.Intervals.CardDeath);
             Destroy(gameObject);
-            _fieldController.ClearCell(CellController);
         }
 
         public int GetEnergyPrice()

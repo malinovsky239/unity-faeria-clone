@@ -187,6 +187,10 @@ namespace Assets.Scripts
 
         public void MoveContent(CellController from, CellController to)
         {
+            if (from == to)
+            {
+                return;
+            }
             PutCardIntoCell(to, FieldContent[from.HexX][from.HexY]);
             ClearCell(from);
         }
