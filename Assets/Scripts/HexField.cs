@@ -1,4 +1,5 @@
 ﻿using System;
+using UnityEngine;
 
 namespace Assets.Scripts
 {
@@ -14,10 +15,6 @@ namespace Assets.Scripts
             for (var i = 0; i < verticalSize; i++)
             {
                 _field[i] = new T[horizontalSize];
-                for (var j = 0; j < horizontalSize; j++)
-                {
-                    _field[i][j] = Activator.CreateInstance<T>();
-                }
             }
             VerticalSize = verticalSize;
             HorizontalSize = horizontalSize;

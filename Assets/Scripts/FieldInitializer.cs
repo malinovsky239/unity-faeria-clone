@@ -91,6 +91,17 @@ namespace Assets.Scripts
                     AddNeighbour(j, CenterY + i, Constants.Neighbours.DownRight);
                 }
             }
+            for (var i = 0; i < _fieldController.Field.VerticalSize; i++)
+            {
+                for (var j = 0; j < _fieldController.Field.HorizontalSize; j++)
+                {
+                    if (!_fieldController.Field[i, j])
+                    {
+                        var tmp = new GameObject();
+                        _fieldController.Field[i, j] = tmp.AddComponent<CellController>();
+                    }
+                }
+            }
         }
 
         private void SetMagicSources()
