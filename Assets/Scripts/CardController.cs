@@ -134,9 +134,12 @@ namespace Assets.Scripts
         {
             CanMoveThisTurn = false;
             var sourceCell = CellController;
-            _fieldController.MoveContent(sourceCell, destinationCell);
-            AnimateMovement(destinationCell.transform.position, State.MovingOnTheField);
-            CellController = destinationCell;
+            if (sourceCell != destinationCell)
+            {
+                _fieldController.MoveContent(sourceCell, destinationCell);
+                AnimateMovement(destinationCell.transform.position, State.MovingOnTheField);
+                CellController = destinationCell;
+            }
             yield return new WaitUntil(() => CurrentState == State.OnTheField);
             destinationCell.PostProcessCard(Owner);
         }
