@@ -62,10 +62,10 @@ namespace Assets.Scripts
         private static readonly Card[] Cards =
         {
             new Card("Faun",     damage: 1, life: 1, energy: 1),
-            new Card("Harpy",    damage: 3, life: 1, energy: 2),
-            new Card("Centaur",  damage: 2, life: 4, energy: 3),
-            new Card("Cerberus", damage: 4, life: 3, energy: 4),
-            new Card("Minotaur", damage: 4, life: 5, energy: 7),
+            new Card("Harpy",    damage: 3, life: 1, energy: 3),
+            new Card("Centaur",  damage: 2, life: 4, energy: 4),
+            new Card("Cerberus", damage: 4, life: 3, energy: 5),
+            new Card("Minotaur", damage: 4, life: 5, energy: 9),
         };
 
         public static Card GetRandomCard(GameController.Player player)
