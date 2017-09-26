@@ -97,17 +97,17 @@ namespace Assets.Scripts
                 yield break;
             }
 
+            NewTurnPreparationsStage1(Player.Player1);
+            yield return new WaitUntil(() => OngoingAnimationsCount == 0);
+
+            NewTurnPreparationsStage2(Player.Player1);
+            IsPlayerMove = true;
             _currentMoveTerrainCellsCount = Constants.StartMoveTerrainCellsCount;
             if (_fieldController.GetPotentialTerrainExpansion(FieldController.CellOwner.Player1).Count == 0)
             {
                 _currentMoveTerrainCellsCount = 0;
                 _endTurn.On();
             }
-
-            NewTurnPreparationsStage1(Player.Player1);
-            yield return new WaitUntil(() => OngoingAnimationsCount == 0);
-            NewTurnPreparationsStage2(Player.Player1);
-            IsPlayerMove = true;
             _messageController.Show(_spriteCollection.NewTurnMessage);
         }
 
