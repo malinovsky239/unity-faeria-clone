@@ -58,7 +58,7 @@ namespace Assets.Scripts
             public const float InDeckShiftOnSelection = 1.0f;
             public const float InDeckShiftOnSelectionSpeed = 8.0f;
             public const float OnTheFieldScale = 0.55f;
-            public const float OnTheFieldAdjustmentSpeed = 0.1f;
+            public const float OnTheFieldAdjustmentSpeed = 1.0f;
             public const float ReverseScaleSpeedCoeff = 0.5f;
             public const int SortingOrderShiftForTopmost = Int16.MaxValue / 2;
         }

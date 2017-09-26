@@ -13,8 +13,8 @@ namespace Assets.Scripts
             IntroMovement,
             InDeck,
             MovingToField,
-            FittingTheCell,
             AdjustingCardInTheCell,
+            FittingTheCell,
             OnTheField,
             MovingOnTheField
         }
@@ -242,7 +242,9 @@ namespace Assets.Scripts
                 case State.IntroMovement:
                 case State.MovingToField:
                 case State.MovingOnTheField:
-                    if (Vector3.Dot(_desiredPosition - transform.position, _lastStepDifference) < 0)
+                    var diff = _desiredPosition - transform.position;
+                    if (Vector3.Dot(diff, _lastStepDifference) < 0 ||
+                        CurrentState == State.MovingToField && diff.magnitude < (_movementSpeed * Time.deltaTime).magnitude)
                     {
                         _lastStepDifference = Vector3.zero;
                         _gameController.OngoingAnimationsCount--;
@@ -264,7 +266,7 @@ namespace Assets.Scripts
                     break;
 
                 case State.AdjustingCardInTheCell:
-                    var diff = _desiredPosition - transform.position;
+                    diff = _desiredPosition - transform.position;
                     if (diff.magnitude > Constants.SmallEps)
                     {
                         transform.position += diff * Constants.Card.OnTheFieldAdjustmentSpeed;
@@ -335,11 +337,11 @@ namespace Assets.Scripts
             switch (CurrentState)
             {
                 case State.OnTheField:
-                case State.AdjustingCardInTheCell:
                 case State.InDeck:
                     Utils.SetSortingOrderRecursively(gameObject, _sortingOrder);
                     break;
 
+                case State.AdjustingCardInTheCell:
                 case State.FittingTheCell:
                 case State.IntroMovement:
                 case State.IntroReverseScale:
