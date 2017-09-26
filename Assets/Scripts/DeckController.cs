@@ -46,7 +46,7 @@ namespace Assets.Scripts
 
         private void AdjustCardPositions()
         {
-            Vector3 step = (_rightBound - _leftBound) / (_cardsInDeck.Count - 1);
+            Vector3 step = (_rightBound - _leftBound) / Mathf.Max(_cardsInDeck.Count - 1, 1);
             for (int i = 0; i < _cardsInDeck.Count; i++)
             {
                 _cardsInDeck[i].AdjustPosition(_leftBound + step * i);
