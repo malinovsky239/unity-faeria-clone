@@ -5,7 +5,8 @@ namespace Assets.Scripts
 {
     public static class Constants
     {
-        public const float Eps = 0.1f;
+        public const float SmallEps = 0.001f;
+        public const float LargeEps = 0.1f;
 
         public static readonly float Sin30 = Mathf.Sin(Mathf.PI / 6);
         public static readonly float Sin45 = Mathf.Sin(Mathf.PI / 4);
@@ -57,6 +58,7 @@ namespace Assets.Scripts
             public const float InDeckShiftOnSelection = 1.0f;
             public const float InDeckShiftOnSelectionSpeed = 8.0f;
             public const float OnTheFieldScale = 0.55f;
+            public const float OnTheFieldAdjustmentSpeed = 0.1f;
             public const float ReverseScaleSpeedCoeff = 0.5f;
             public const int SortingOrderShiftForTopmost = Int16.MaxValue / 2;
         }

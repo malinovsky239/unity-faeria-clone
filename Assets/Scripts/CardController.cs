@@ -14,6 +14,7 @@ namespace Assets.Scripts
             InDeck,
             MovingToField,
             FittingTheCell,
+            AdjustingCardInTheCell,
             OnTheField,
             MovingOnTheField
         }
@@ -262,9 +263,21 @@ namespace Assets.Scripts
                     }
                     break;
 
-                case State.InDeck:
+                case State.AdjustingCardInTheCell:
                     var diff = _desiredPosition - transform.position;
-                    if (diff.magnitude > Constants.Eps)
+                    if (diff.magnitude > Constants.SmallEps)
+                    {
+                        transform.position += diff * Constants.Card.OnTheFieldAdjustmentSpeed;
+                    }
+                    else
+                    {
+                        CurrentState++;
+                    }
+                    break;
+
+                case State.InDeck:
+                    diff = _desiredPosition - transform.position;
+                    if (diff.magnitude > Constants.LargeEps)
                     {
                         var temp = diff * Time.deltaTime;
                         transform.position += new Vector3(temp.x, temp.y * Constants.Card.InDeckShiftOnSelectionSpeed, temp.z);
@@ -322,6 +335,7 @@ namespace Assets.Scripts
             switch (CurrentState)
             {
                 case State.OnTheField:
+                case State.AdjustingCardInTheCell:
                 case State.InDeck:
                     Utils.SetSortingOrderRecursively(gameObject, _sortingOrder);
                     break;
