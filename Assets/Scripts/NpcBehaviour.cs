@@ -94,10 +94,11 @@ namespace Assets.Scripts
 
         private IEnumerator PlayCardsOnField()
         {
-            foreach (var card in _cardsOnField)
+            foreach (var currentCard in _cardsOnField)
             {
-                if (card.CanMoveThisTurn)
+                if (currentCard.CanMoveThisTurn)
                 {
+                    var card = currentCard; // to avoid "Access to foreach variable in closure" warning in WaitWhile
                     var destinationCells = _fieldController.GetPotentialDestinationCells(card.CellController, GameController.Player.Player2);
                     var cellsToAttack = destinationCells.FindAll(cell => _fieldController.FieldCellContent[cell] != FieldController.CellContent.Empty);
                     destinationCells = destinationCells.Where(cell => _fieldController.FieldCellContent[cell] == FieldController.CellContent.Empty).ToList();
