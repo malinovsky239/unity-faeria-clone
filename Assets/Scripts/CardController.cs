@@ -141,7 +141,14 @@ namespace Assets.Scripts
                 CellController = destinationCell;
             }
             yield return new WaitUntil(() => CurrentState == State.OnTheField);
-            destinationCell.PostProcessCard(Owner);
+            if (sourceCell != destinationCell)
+            {
+                destinationCell.PostProcessCard(Owner);
+            }
+            else
+            {
+                _cardMouseInteraction.UnlockForMouseInteractions();
+            }
         }
 
         public IEnumerator Attack(GameObject attackedEntity)
