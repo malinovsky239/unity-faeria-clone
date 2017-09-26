@@ -162,7 +162,7 @@ namespace Assets.Scripts
             return adjacentPassableCells;
         }
 
-        private List<CellController> GetAdjacentCellsWithOpponentCards(List<CellController> baseCells,
+        public List<CellController> GetAdjacentCellsWithOpponentCards(List<CellController> baseCells,
             GameController.Player player)
         {
             var cellsWithOpponentCards = new HashSet<CellController>();

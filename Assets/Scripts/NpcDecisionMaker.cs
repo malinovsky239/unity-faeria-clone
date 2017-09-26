@@ -114,7 +114,9 @@ namespace Assets.Scripts
             if (card.CellController.HasNeighboringMagicSource)
             {
                 destinationCells = destinationCells.Where(cell => cell.HasNeighboringMagicSource).ToList();
-                cellsToAttack = cellsToAttack.Where(cell => cell.HasNeighboringMagicSource).ToList();
+                var tmp = destinationCells.ToList();
+                tmp.Insert(0, card.CellController);
+                cellsToAttack = _fieldController.GetAdjacentCellsWithOpponentCards(destinationCells, GameController.Player.Player2);
             }
             if (cellsToAttack.Count > 0)
             {
