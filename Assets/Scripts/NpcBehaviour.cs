@@ -100,6 +100,7 @@ namespace Assets.Scripts
                 {
                     var destinationCells = _fieldController.GetPotentialDestinationCells(card.CellController, GameController.Player.Player2);
                     var cellsToAttack = destinationCells.FindAll(cell => _fieldController.FieldCellContent[cell] != FieldController.CellContent.Empty);
+                    destinationCells = destinationCells.Where(cell => _fieldController.FieldCellContent[cell] == FieldController.CellContent.Empty).ToList();
                     CellController cellToMove = null;
                     CellController cellToAttack = null;
                     _decisionMaker.PlayCardOnField(ref cellToMove, ref cellToAttack, card, destinationCells, cellsToAttack);
