@@ -177,10 +177,9 @@ namespace Assets.Scripts
                     if (_fieldHelper.ValidCellCoordinate(neighbourCoordX, neighbourCoordY))
                     {
                         var cellToAttack = Field[neighbourCoordX, neighbourCoordY];
-                        if (FieldCellContent[cellToAttack] == CellContent.Card &&
-                            FieldContent[cellToAttack].GetComponent<CardController>().Owner != player ||
-                            FieldCellContent[cellToAttack] == CellContent.Orb &&
-                            Utils.CellOwnerToPlayer(FieldCellOwner[cellToAttack]) != player)
+                        if (!cellsWithOpponentCards.Contains(cellToAttack) &&
+                            (ContainsOpponentCard(cellToAttack, player) ||
+                             ContainsOpponentOrb(cellToAttack, player)))
                         {
                             cellToAttack.SetDefaultAttackSource(controller);
                             cellsWithOpponentCards.Add(cellToAttack);
@@ -279,6 +278,18 @@ namespace Assets.Scripts
                 }
             }
             return false;
+        }
+
+        private bool ContainsOpponentCard(CellController cell, GameController.Player player)
+        {
+            return (FieldCellContent[cell] == CellContent.Card &&
+                    FieldContent[cell].GetComponent<CardController>().Owner != player);
+        }
+
+        private bool ContainsOpponentOrb(CellController cell, GameController.Player player)
+        {
+            return (FieldCellContent[cell] == CellContent.Orb &&
+                    Utils.CellOwnerToPlayer(FieldCellOwner[cell]) != player);
         }
 
         public int CountMagicSourcesUnderControl(GameController.Player player)
