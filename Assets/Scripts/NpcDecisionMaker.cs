@@ -116,7 +116,7 @@ namespace Assets.Scripts
                 destinationCells = destinationCells.Where(cell => cell.HasNeighboringMagicSource).ToList();
                 var tmp = destinationCells.ToList();
                 tmp.Insert(0, card.CellController);
-                cellsToAttack = _fieldController.GetAdjacentCellsWithOpponentCards(destinationCells, GameController.Player.Player2);
+                cellsToAttack = _fieldController.GetAdjacentCellsWithOpponentCards(tmp, GameController.Player.Player2);
             }
             if (cellsToAttack.Count > 0)
             {
