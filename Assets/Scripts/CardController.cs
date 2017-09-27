@@ -174,11 +174,11 @@ namespace Assets.Scripts
             _gameController.OngoingAnimationsCount--;
         }
 
-        private void AnimateMovement(Vector3 fieldPosition, State newState)
+        private void AnimateMovement(Vector3 desiredPosition, State newState)
         {
             _gameController.OngoingAnimationsCount++;
             CurrentState = newState;
-            _desiredPosition = new Vector3(fieldPosition.x, fieldPosition.y);
+            _desiredPosition = desiredPosition;
             _movementSpeed = _desiredPosition - transform.position;
         }
 
