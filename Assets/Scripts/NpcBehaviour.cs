@@ -34,7 +34,7 @@ namespace Assets.Scripts
 
         private void Start()
         {
-            _decisionMaker = new NpcDecisionMaker(_fieldController);
+            _decisionMaker = new NpcDecisionMaker(this, _fieldController);
         }
 
         public IEnumerator MakeTurn()

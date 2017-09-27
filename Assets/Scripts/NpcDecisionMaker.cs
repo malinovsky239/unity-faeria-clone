@@ -14,13 +14,16 @@ namespace Assets.Scripts
         }
 
         private StrategyMode _currentStrategyMode;
+        private NpcBehaviour _npcController;
         private FieldController _fieldController;
         private CellController _npcOrbPosition;
         private CellController _playerOrbPosition;
         private const int ThreatRadius = 2;
+        private const int EnergyThreshold = 10;
 
-        public NpcDecisionMaker(FieldController fieldController)
+        public NpcDecisionMaker(NpcBehaviour npcController, FieldController fieldController)
         {
+            _npcController = npcController;
             _fieldController = fieldController;
             _npcOrbPosition = _fieldController.GetOrbPosition(GameController.Player.Player2);
             _playerOrbPosition = _fieldController.GetOrbPosition(GameController.Player.Player1);
@@ -37,25 +40,28 @@ namespace Assets.Scripts
                 _currentStrategyMode = StrategyMode.Defensive;
                 return;
             }
-            var magicSourceControlInfo = _fieldController.GetMagicSourcesControlInfo();
-            var balance = 0;
-            foreach (var controllingSide in magicSourceControlInfo)
+            if (_npcController.CurrentEnergy < EnergyThreshold)
             {
-                switch (controllingSide)
+                var magicSourceControlInfo = _fieldController.GetMagicSourcesControlInfo();
+                var balance = 0;
+                foreach (var controllingSide in magicSourceControlInfo)
                 {
-                    case GameController.Player.Player1:
-                        balance--;
-                        break;
+                    switch (controllingSide)
+                    {
+                        case GameController.Player.Player1:
+                            balance--;
+                            break;
 
-                    case GameController.Player.Player2:
-                        balance++;
-                        break;
+                        case GameController.Player.Player2:
+                            balance++;
+                            break;
+                    }
                 }
-            }
-            if (balance <= 0)
-            {
-                _currentStrategyMode = StrategyMode.Explorative;
-                return;
+                if (balance <= 0)
+                {
+                    _currentStrategyMode = StrategyMode.Explorative;
+                    return;
+                }
             }
             _currentStrategyMode = StrategyMode.Aggressive;
         }
@@ -111,7 +117,7 @@ namespace Assets.Scripts
         public void PlayCardOnField(ref CellController cellToMove, ref CellController cellToAttack, CardController card,
             List<CellController> destinationCells, List<CellController> cellsToAttack)
         {
-            if (card.CellController.HasNeighboringMagicSource)
+            if (card.CellController.HasNeighboringMagicSource && _npcController.CurrentEnergy < EnergyThreshold)
             {
                 destinationCells = destinationCells.Where(cell => cell.HasNeighboringMagicSource).ToList();
                 var tmp = destinationCells.ToList();
