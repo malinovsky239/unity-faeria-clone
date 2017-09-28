@@ -101,5 +101,7 @@ namespace Assets.Scripts
             public const float BeforeOrbDeath = 0.5f;
             public const float AfterTerrainExpansionByNPC = 0.5f;
         }
+
+        public const int RightMouseButton = 1;
     }
 }

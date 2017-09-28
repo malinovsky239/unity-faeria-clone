@@ -89,5 +89,10 @@ namespace Assets.Scripts
                 _cardController.CellController.OnMouseDown(); // pass MouseClick "through" card's collider
             }
         }
+
+        public void Deselect()
+        {
+            State = MouseInteractionState.Basic;
+        }
     }
 }

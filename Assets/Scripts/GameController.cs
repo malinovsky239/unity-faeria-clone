@@ -213,7 +213,10 @@ namespace Assets.Scripts
         public void SwitchToWaitingMode()
         {
             _fieldController.RemoveCellHighlighting();
+            _fieldController.DeselectCard();
+            _playerDeck.DeselectCard();
             CurrentMode = Mode.WaitingForAction;
+
         }
 
         public DeckController GetDeckByOwner(Player player)

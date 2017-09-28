@@ -38,6 +38,15 @@ namespace Assets.Scripts
             ActiveCard = card;
         }
 
+        public void DeselectCard()
+        {
+            if (ActiveCard)
+            {
+                ActiveCard.GetComponent<CardMouseInteraction>().Deselect();
+                ActiveCard = null;
+            }
+        }
+
         private IEnumerator AdjustCardPositionsWhenReady(CardController newCard)
         {
             yield return new WaitUntil(() => newCard.CurrentState == CardController.State.IntroMovement);

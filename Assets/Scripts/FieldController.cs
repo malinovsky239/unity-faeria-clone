@@ -416,5 +416,14 @@ namespace Assets.Scripts
         {
             _activeCard = card;
         }
+
+        public void DeselectCard()
+        {
+            if (_activeCard)
+            {
+                _activeCard.GetComponent<CardMouseInteraction>().Deselect();
+                _activeCard = null;
+            }
+        }
     }
 }
